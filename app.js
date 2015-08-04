@@ -13,7 +13,7 @@ var h = 1
 var p = 5.0
 
 app.get('/wave-data', function(req, res) {
-    res.send(h + "," + p)
+    res.send(h + ";" )//+ p)
 })
 
 app.use(express.static(__dirname + '/public'))

@@ -5,7 +5,7 @@
     <title></title>
     <script src="p5.min.js"></script>
     <script type="text/javascript" src="sketch.js"></script>
-    <script src='//localhost:3300/socket.io/socket.io.js'></script>
+    <script src='//fii.to:3300/socket.io/socket.io.js'></script>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
@@ -28,7 +28,7 @@
     ////////////socket.io/////////////
     //////////////////////////////////
 
-    var socket = io.connect('//localhost:3300')
+    var socket = io.connect('//fii.to:3300')
     socket.on('wave', function(data) {
         var waveData = "date: " + data.date + " | location: " + data.loc + " | latitude: " + data.lat + " | longitude: " + data.lon + " | wave_height: " + data.h + "m | wave_period: " + data.p + "s"
 
