@@ -3,11 +3,23 @@ body{
 }
 #container{
 	width: 80%;
-	margin-left: 7%; 
-	margin-top: 13%;
+	margin-left: 12%; 
+	margin-top: 8%;
 }
 #data{
 	font-family: "Courier New", Courier, monospace;
+	margin-left: 30%;
+	width:40%;
+	font-size: 20px;
+	padding-top: 30px;
+	color: #999;
+	text-align: center;
+}
+
+#time{
+	font-family: "Courier New", Courier, monospace;
+	margin-left: 30%;
+	width:40%;
 	font-size: 20px;
 	padding-top: 30px;
 	color: #999;

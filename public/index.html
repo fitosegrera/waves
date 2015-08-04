@@ -1,13 +1,105 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title></title>
-	<script src="p5.min.js"></script>
-	<script type="text/javascript" src="sketch.js"></script>
-	<link rel="stylesheet" type="text/css" href="style.css">
+    <title></title>
+    <script src="p5.min.js"></script>
+    <script type="text/javascript" src="sketch.js"></script>
+    <script src='//localhost:3300/socket.io/socket.io.js'></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body>
-<div id="container"></div>
-<div id="data">date: 2015/07/23 | location: cartagena, col | latitude: -43.5199 | longitude: 23.1156 | wave_height: 1.05m | wave_period: 0.993s</div>
+    <div id="container"></div>
+    <div id="data">date: test_data... | location: test_data... | latitude: test_data... | longitude: test_data... | wave_height: 1m | wave_period: 1s</div>
+    <div id="time"></div>
+    <script>
+
+    ////////////////////////////////////
+    ////////////global vars/////////////
+    ////////////////////////////////////
+
+    var amplitude = 1
+    var mappedAmplitude = amplitude
+    var period = 1
+    var mappedPeriod = period
+
+    //////////////////////////////////
+    ////////////socket.io/////////////
+    //////////////////////////////////
+
+    var socket = io.connect('//localhost:3300')
+    socket.on('wave', function(data) {
+        var waveData = "date: " + data.date + " | location: " + data.loc + " | latitude: " + data.lat + " | longitude: " + data.lon + " | wave_height: " + data.h + "m | wave_period: " + data.p + "s"
+
+        document.getElementById("data").innerHTML = waveData
+        amplitude = data.h
+        period = data.p
+    })
+
+    socket.on('t', function(data) {
+        document.getElementById("time").innerHTML = "data refreshing in " + data + "s"
+    })
+
+    //////////////////////////////////
+    ///////////////p5js///////////////
+    //////////////////////////////////
+    
+    var xspacing = 60;
+    var w;
+    var theta = 0.0;
+    var dx;
+    var yvalues = [];
+    var canvas;
+
+    function setup() {
+        canvas = createCanvas(1600, 600);
+        canvas.parent('container');
+        w = width - 250;
+    }
+
+    function draw() {
+        background(0);
+        mappedAmplitude = map(amplitude, 0, 5, 0, 300);
+        // mappedPeriod = map(period, 0, 10, 0, 100);
+        mappedPeriod = 500;	
+        dx = ((Math.PI * 2) / mappedPeriod) * xspacing;	
+        calcWave();
+        for (var i = 0; i < 10; i++) {
+            translate(i * 5, i * 5);
+            renderWave(map(i, 0, 10, 0, 255));
+        }
+    }
+
+    function calcWave() {
+        theta += 0.02;
+        var x = theta;
+        for (var i = 0; i < w / xspacing; i++) {
+            yvalues[i] = (Math.sin(x) * mappedAmplitude);
+            x += dx;
+        }
+    }
+
+    function renderWave(c) {
+        noStroke();
+        fill(c);
+        push();
+        for (var x = 0; x < w / xspacing; x++) {
+            if (x > 0) {
+                strokeWeight(0.8);
+                stroke(c);
+                noFill();
+                ellipse(x * xspacing, height / 4 + yvalues[x], 5, 5);
+                line(x * xspacing, height / 4 + yvalues[x], (x - 1) * xspacing + 10, height / 4 + yvalues[x] - 50);
+                if (x > 1) {
+                    strokeWeight(0.5);
+                    line(x * xspacing, height / 4 + yvalues[x], (x - 1) * xspacing, height / 4 + yvalues[x - 1]);
+                }
+            }
+        }
+        pop();
+    }
+    </script>
 </body>
+
 </html>
