@@ -4,7 +4,6 @@
 <head>
     <title></title>
     <script src="p5.min.js"></script>
-    <script type="text/javascript" src="sketch.js"></script>
     <script src='//fii.to:3300/socket.io/socket.io.js'></script>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
@@ -12,7 +11,6 @@
 <body>
     <div id="container"></div>
     <div id="data">date: test_data... | location: test_data... | latitude: test_data... | longitude: test_data... | wave_height: 1m | wave_period: 1s</div>
-    <div id="time"></div>
     <script>
 
     ////////////////////////////////////
@@ -35,10 +33,6 @@
         document.getElementById("data").innerHTML = waveData
         amplitude = data.h
         period = data.p
-    })
-
-    socket.on('t', function(data) {
-        document.getElementById("time").innerHTML = "data refreshing in " + data + "s"
     })
 
     //////////////////////////////////

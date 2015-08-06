@@ -11,14 +11,33 @@ var swellPeriod_secs = []
 var d = 0
 var h = 1
 var p = 5.0
+var lat = 0 
+var lon = 0 
+var date
+
+var waveData = {
+    //"loc": locationData,
+    "loc": "caribbean sea",
+    "lat": lat,
+    "lon": lon,
+    "date": date,
+    "d": d,
+    "h": h,
+    "p": p
+}
 
 app.get('/wave-h', function(req, res) {
-    res.send(h + ";" )
+    res.send("$"+ h + ";")
 })
 
 app.get('/wave-p', function(req, res) {
-    res.send(p + ";" )
+    res.send("$"+ p + ";")
 })
+
+serv_io.on('connection', function(socket) {
+    console.log('a user connected');
+    serv_io.emit('wave', waveData)
+});
 
 app.use(express.static(__dirname + '/public'))
 
@@ -35,37 +54,9 @@ function averageData(obj) {
     return average
 }
 
-/*
-function googleGetLocation(lat, lon, date, d, h, p) {
-    var googleApiKey = "AIzaSyA1EJjFu9FRPE5wguXrV2bhQxTSzmgO4rs"
-    var googleUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lon + "&key=" + googleApiKey
-    var locationData
-    request(googleUrl, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var rawData = JSON.parse(body)
-            locationData = rawData.results
-            console.log(locationData)
-        } else {
-            locationData = "mar caribe"
-            console.log("error")
-        }
-        var waveData = {
-            "loc": locationData,
-            "lat": lat,
-            "lon": lon,
-            "date": date,
-            "d": d,
-            "h": h,
-            "p": p
-        }
-        serv_io.emit('wave', waveData)
-        console.log(waveData)
-    })
-}
-*/
 setInterval(function() {
-    var lat = getRandomArbitrary(8, 30) // 30 to 8
-    var lon = getRandomArbitrary(-57, -98) // -98 to -57
+    lat = getRandomArbitrary(8, 30) // 30 to 8
+    lon = getRandomArbitrary(-57, -98) // -98 to -57
     var time = 3
     var apiKey = '7aa718d134b3cf81740dc21a8a0c0'
     var url = 'https://api.worldweatheronline.com/free/v2/marine.ashx?key=' + apiKey + '&tp=' + time + '&tide=yes&format=json&q=' + lat + ',' + lon
@@ -81,15 +72,12 @@ setInterval(function() {
                 swellHeight_m.push(weatherObject[i].swellHeight_m)
                 swellPeriod_secs.push(weatherObject[i].swellPeriod_secs)
             }
-            var date = rawData.data.weather[0].date
+            date = rawData.data.weather[0].date
             d = averageData(swellDir)
             h = averageData(swellHeight_m)
             p = averageData(swellPeriod_secs)
 
-            //googleGetLocation(lat, lon, date, d, h, p)
-
-            var waveData = {
-                //"loc": locationData,
+            waveData = {
                 "loc": "caribbean sea",
                 "lat": lat,
                 "lon": lon,
@@ -107,14 +95,6 @@ setInterval(function() {
         }
     })
 }, 400000)
-
-//////////////////////////////////
-//////////////clock///////////////
-//////////////////////////////////
-setInterval(function(){
-	serv_io.emit('t', clock)
-	clock--
-},1000)
 
 ///////////////////////////////////
 //////////////server///////////////
