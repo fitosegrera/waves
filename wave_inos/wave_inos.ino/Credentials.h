@@ -2,7 +2,7 @@
 #define __CREDENTIALS_H__
 
 // Wifi parameters
-char passphrase[] = "wticn.com";
-char ssid[] = "ChinaNet1221AP";
+char passphrase[] = "password";
+char ssid[] = "ssid";
 
 #endif
